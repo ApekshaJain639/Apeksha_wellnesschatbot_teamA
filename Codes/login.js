@@ -1,39 +1,8 @@
-/**
- * ============================================================
- *  Wellness Chatbot — login.js
- *  Controls:  login.html  +  login.css
- *  Backend:   app.py (Flask)
- *
- *  Features
- *  ─────────
- *  1.  Page loader hide
- *  2.  Dynamic particle generator
- *  3.  Animated stat counters
- *  4.  Dark / light theme toggle (persisted to localStorage)
- *  5.  Floating label inputs (CSS does the animation; JS watches focus)
- *  6.  Real-time email validation with green tick
- *  7.  Live password strength meter (colour + label)
- *  8.  Caps-lock warning
- *  9.  Password show / hide toggle
- * 10.  "Remember me" — persist email in localStorage
- * 11.  Rate limiting + lockout (5 attempts → 15 min cooldown)
- * 12.  Full form validation before submit
- * 13.  Fetch POST to Flask /auth/login with loading + ripple
- * 14.  Session storage (JWT + user info)
- * 15.  Google OAuth redirect → Flask /auth/google
- * 16.  Forgot password → Flask /auth/forgot-password
- * 17.  Alert banner (error / success / warning) with auto-dismiss
- * 18.  Toast notification system
- *  19.  Brand icon hover pulse (CSS class driven by JS)
- * 20.  Shake animation on failed submit
- * ============================================================
- */
+
 
 'use strict';
 
-/* ──────────────────────────────────────────────────
-   CONFIG  — update API_BASE_URL for your Flask server
-   ────────────────────────────────────────────────── */
+
 const CONFIG = {
   API_BASE_URL        : 'http://localhost:5000',
   LOGIN_ENDPOINT      : '/auth/login',
@@ -47,9 +16,7 @@ const CONFIG = {
   THEME_KEY           : 'wc_theme',
 };
 
-/* ──────────────────────────────────────────────────
-   RUNTIME STATE
-   ────────────────────────────────────────────────── */
+
 const state = {
   loginAttempts  : parseInt(localStorage.getItem('wc_attempts') || '0', 10),
   isLockedOut    : false,
@@ -58,9 +25,7 @@ const state = {
   passwordVisible: false,
 };
 
-/* ──────────────────────────────────────────────────
-   DOM HELPERS
-   ────────────────────────────────────────────────── */
+
 const $ = (id) => document.getElementById(id);
 const $q = (sel) => document.querySelector(sel);
 
@@ -97,9 +62,7 @@ const DOM = {
   statNumbers  : () => document.querySelectorAll('.stat-number'),
 };
 
-/* ════════════════════════════════════════════════
-   INIT
-   ════════════════════════════════════════════════ */
+
 document.addEventListener('DOMContentLoaded', () => {
   initLoader();
   initTheme();
@@ -112,9 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.info('🌿 Wellness Chatbot login.js ready');
 });
 
-/* ════════════════════════════════════════════════
-   1. PAGE LOADER
-   ════════════════════════════════════════════════ */
+
 function initLoader() {
   // After the CSS fill animation (~1.4 s) finishes, hide loader & show page
   setTimeout(() => {
@@ -123,9 +84,7 @@ function initLoader() {
   }, 1600);
 }
 
-/* ════════════════════════════════════════════════
-   2. PARTICLE GENERATOR
-   ════════════════════════════════════════════════ */
+
 function initParticles() {
   const container = DOM.particles();
   if (!container) return;
@@ -150,9 +109,7 @@ function initParticles() {
   });
 }
 
-/* ════════════════════════════════════════════════
-   3. STAT COUNTERS  (animated count-up)
-   ════════════════════════════════════════════════ */
+
 function initStatCounters() {
   // Trigger once the left panel has animated in (~1 s delay)
   setTimeout(() => {
@@ -177,9 +134,7 @@ function animateCount(el, from, to, duration, suffix) {
   requestAnimationFrame(tick);
 }
 
-/* ════════════════════════════════════════════════
-   4. THEME TOGGLE
-   ════════════════════════════════════════════════ */
+
 function initTheme() {
   const saved = localStorage.getItem(CONFIG.THEME_KEY) || 'light';
   applyTheme(saved, false);
@@ -197,9 +152,7 @@ function toggleTheme() {
   applyTheme(current === 'dark' ? 'light' : 'dark');
 }
 
-/* ════════════════════════════════════════════════
-   5. EVENT LISTENERS
-   ════════════════════════════════════════════════ */
+
 function initEventListeners() {
   // Theme
   DOM.themeToggle()?.addEventListener('click', toggleTheme);
@@ -248,9 +201,7 @@ function initEventListeners() {
   });
 }
 
-/* ════════════════════════════════════════════════
-   6. LIVE EMAIL VALIDATION  (green tick on valid)
-   ════════════════════════════════════════════════ */
+
 function liveValidateEmail() {
   const val  = DOM.emailInput()?.value.trim() || '';
   const tick = DOM.emailTick();
@@ -259,9 +210,7 @@ function liveValidateEmail() {
   if (isOk) DOM.emailGroup()?.classList.add('is-valid');
 }
 
-/* ════════════════════════════════════════════════
-   7. PASSWORD STRENGTH METER
-   ════════════════════════════════════════════════ */
+
 function updateStrengthMeter(password) {
   const meter = DOM.strengthMeter();
   const fill  = DOM.strengthFill();
@@ -295,9 +244,7 @@ function getPasswordStrength(pwd) {
   return           { strength: 'strong', text: 'Strong' };
 }
 
-/* ════════════════════════════════════════════════
-   8. CAPS LOCK DETECTOR
-   ════════════════════════════════════════════════ */
+
 function detectCapsLock(e) {
   const capsOn = e.getModifierState?.('CapsLock');
   const warn   = DOM.capsWarning();
@@ -305,9 +252,7 @@ function detectCapsLock(e) {
   warn.classList.toggle('show', !!capsOn);
 }
 
-/* ════════════════════════════════════════════════
-   9. PASSWORD VISIBILITY TOGGLE
-   ════════════════════════════════════════════════ */
+
 function togglePasswordVisibility() {
   state.passwordVisible = !state.passwordVisible;
   const input  = DOM.passwordInput();
